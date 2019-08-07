@@ -98,14 +98,14 @@ function validateVolunteer(volunteer) {
 }
 */
 
-// Donor.create({
-//   name: {
-//     first: "mido",
-//     last: "nashaat"
-//   },
-//   bloodType: "A+",
+Donor.create({
+  name: {
+    first: "mido",
+    last: "nashaat"
+  },
+  bloodType: "A+",
 
-//   nationalId: 29603231601177
-// });
+  nationalId: 29603231601177
+});
 
 module.exports = router;
