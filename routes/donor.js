@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   async function getAllDonor() {
     const donors = await Donor.find();
     res.send(donors).status(200);
-    console.log(donors);
+    //console.log(donors);
   }
   getAllDonor();
 });
@@ -98,13 +98,14 @@ function validateVolunteer(volunteer) {
 }
 */
 
-Donor.create({
-  name: {
-    first: "mido",
-    last: "nashaat"
-  },
-  bloodType: "A+",
+// Donor.create({
+//   name: {
+//     first: "mido",
+//     last: "nashaat"
+//   },
+//   bloodType: "A+",
 
-  nationalId: 29603231601177
-});
+//   nationalId: 29603231601177
+// });
+
 module.exports = router;

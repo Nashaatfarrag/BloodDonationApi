@@ -3,7 +3,7 @@ var bodyParser = require('body-parser')
 const Donor = require('./routes/donor');
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 // to make request body as json object
 // app.use(express.urlencoded({ extended: true })); //to understand url parameters
 app.use(express.static("public"));

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/BloodDonation', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/BloodDonation' || process.env.MONGODB_URI , { useNewUrlParser: true })
     .then(() => console.log('connected to db successfully'))
     .catch((err) => console.log(err))
 
