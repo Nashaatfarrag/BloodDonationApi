@@ -3,7 +3,7 @@ var ObjectId = require("mongodb").ObjectID;
 const router = express.Router();
 const Donor = require("./schema/DonorsSchema");
 router.use(express.json());
-//get all donors
+
 
 router.get("/", (req, res) => {
   // const sortBy = req.query.sortBy;
@@ -26,18 +26,19 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   // console.log(req.header);
   const createdDonor = {
-    name: {
-      first: req.body.name.first,
-      last: req.body.name.last
-    },
+    name: req.body.name,
     bloodType: req.body.bloodType,
     contactInfo: {
-      mobile: req.body.contactInfo.mobile
+      tel: req.body.contactInfo.tel,
+      mail: req.body.contactInfo.mail
     },
-    nationalId: req.body.nationalId,
+    basicInfo: {
+      nationalId: req.body.basicInfo.nationalId,
+      birthDate: req.body.basicInfo.birthDate
+    },
     donation: {
-      available: req.body.donation.available,
-      donationTimes: req.body.donation.donationTimes
+     // available: req.body.donation.available,
+      //donationTimes: req.body.donation.donationTimes
       //lastDonation: req.body.donation.lastDonation
     }
   };
@@ -48,12 +49,16 @@ router.post("/", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   const idDeleted = req.params.id;
-  console.log(idDeleted);
+  //console.log(idDeleted);
   async function removeDocument(idDeleted) {
     try {
       const result = await Donor.findOneAndDelete(
-        { _id: idDeleted },
-        { returnOriginal: false }
+        {
+          _id: idDeleted
+        },
+        {
+          returnOriginal: false
+        }
       );
       return result.value;
     } catch (err) {
@@ -98,14 +103,14 @@ function validateVolunteer(volunteer) {
 }
 */
 
-Donor.create({
-  name: {
-    first: "mido",
-    last: "nashaat"
-  },
-  bloodType: "A+",
+// Donor.create({
+//   name: {
+//     first: "mido",
+//     last: "nashaat"
+//   },
+//   bloodType: "A+",
 
-  nationalId: 29603231601177
-});
+//   nationalId: 29603231601177
+// });
 
 module.exports = router;
