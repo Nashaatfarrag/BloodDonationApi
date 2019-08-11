@@ -28,6 +28,7 @@ router.post("/", (req, res) => {
   const createdDonor = {
     name: req.body.name,
     bloodType: req.body.bloodType,
+    gender : req.body.gender,
     contactInfo: {
       tel: req.body.contactInfo.tel,
       mail: req.body.contactInfo.mail
@@ -43,8 +44,9 @@ router.post("/", (req, res) => {
     }
   };
   // console.log(createdDonor);
-  Donor.create(createdDonor);
-  res.send(createdDonor);
+  Donor.create(createdDonor).then(res.send(createdDonor)).catch((err) => console.log(err.errmsg));
+  
+  
 });
 
 router.delete("/:id", (req, res) => {

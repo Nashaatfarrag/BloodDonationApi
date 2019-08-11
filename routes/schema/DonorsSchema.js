@@ -13,7 +13,13 @@ const donorSchema = new mongoose.Schema({
     tel: String,
     mail: String
   },
-  basicInfo: { nationalId: Number, birthDate: Date },
+  imgUrl: String,
+  basicInfo: {
+    nationalId: { type: Number , required: true , unique : true },
+    birthDate: Date,
+    gender: String,
+    Address: { type :String , default : "Tatay-Santa-Gharbyia"}
+  },
   donation: {
     available: Boolean,
     donationTimes: Number,
