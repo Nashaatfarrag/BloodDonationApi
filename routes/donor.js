@@ -29,6 +29,7 @@ router.post("/", (req, res) => {
     name: req.body.name,
     bloodType: req.body.bloodType,
     gender : req.body.gender,
+    imgUrl : req.body.imgUrl ,
     contactInfo: {
       tel: req.body.contactInfo.tel,
       mail: req.body.contactInfo.mail
