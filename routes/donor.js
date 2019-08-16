@@ -4,7 +4,6 @@ const router = express.Router();
 const Donor = require("./schema/DonorsSchema");
 router.use(express.json());
 
-
 router.get("/", (req, res) => {
   // const sortBy = req.query.sortBy;
   async function getAllDonor() {
@@ -16,11 +15,22 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  async function getDonor() {
-    const donor = await Donor.findById(id);
-    res.send(donor).status(200);
-  }
-  getDonor();
+  Donor.findById(req.params.id, (error, post) => {
+    if (error) console.error(error);
+
+    res.send(post);
+  });
+  // let id = req.params.id;
+  // async function getDonor() {
+  //   let donor = await Donor.findOne({ "basicInfo.nationalId": parseInt(id) })
+  //     .then(() => {
+  //       res.send(donor).status(200);
+  //     })
+  //     .catch(err => {
+  //       console.log(err.message);
+  //     });
+  // }
+  // getDonor();
 });
 
 router.post("/", (req, res) => {
@@ -28,8 +38,8 @@ router.post("/", (req, res) => {
   const createdDonor = {
     name: req.body.name,
     bloodType: req.body.bloodType,
-    gender : req.body.gender,
-    imgUrl : req.body.imgUrl ,
+    gender: req.body.gender,
+    imgUrl: req.body.imgUrl,
     contactInfo: {
       tel: req.body.contactInfo.tel,
       mail: req.body.contactInfo.mail
@@ -37,17 +47,17 @@ router.post("/", (req, res) => {
     basicInfo: {
       nationalId: req.body.basicInfo.nationalId,
       birthDate: req.body.basicInfo.birthDate
-    },
-    donation: {
-     // available: req.body.donation.available,
-      //donationTimes: req.body.donation.donationTimes
-      //lastDonation: req.body.donation.lastDonation
     }
+    // donation: {
+    //   available: req.body.donation.available,
+    //   donationTimes: req.body.donation.donationTimes
+    //   lastDonation: req.body.donation.lastDonation
+    // }
   };
   // console.log(createdDonor);
-  Donor.create(createdDonor).then(res.send(createdDonor)).catch((err) => console.log(err.errmsg));
-  
-  
+  Donor.create(createdDonor)
+    .then(res.send(createdDonor))
+    .catch(err => console.log(err));
 });
 
 router.delete("/:id", (req, res) => {
@@ -72,26 +82,40 @@ router.delete("/:id", (req, res) => {
   res.sendStatus(200);
 });
 
-/*
-router.put('/:id', (req, res) => {
-    const volunteer = volunteers.find(c => c.id === parseInt(req.params.id));
-    if (!volunteer) return res.status(404).send("there is no vounteer with such id");
-    //console.log(volunteers);
-    startupDebugger('put method is used ... ');
-    let vounteeredited = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        age: req.body.age,
-        joinDate: req.body.joinDate,
-        position: req.body.position,
-        skills: req.body.skills,
-        committee: req.body.committee
+router.put("/:id", (req, res) => {
+   Donor.findById(req.params.id, (err , donor) => {
+    if (err)  console.log(err)
+    donor.basicInfo.birthDate = req.body.birthDate;
+    res.send(donor);
+   });
+  
+  //console.log(volunteers);
+  //startupDebugger("put method is used ... ");
+  /*
+  let editedDonor = {
+    name: req.body.name,
+    bloodType: req.body.bloodType,
+    gender: req.body.gender,
+    imgUrl: req.body.imgUrl,
+    contactInfo: {
+      tel: req.body.contactInfo.tel,
+      mail: req.body.contactInfo.mail
+    },
+    basicInfo: {
+      nationalId: req.body.basicInfo.nationalId,
+      birthDate: req.body.basicInfo.birthDate
     }
-    volunteer.lastName = vounteeredited.lastName;
-
-    res.send(volunteer);
+    // donation: {
+    //   available: req.body.donation.available,
+    //   donationTimes: req.body.donation.donationTimes,
+    //   lastDonation: req.body.donation.lastDonation
+    // }
+  };
+  donor.basicInfo = editedDonor.basicInfo;
+*/
+  //res.send(donor);
 });
-
+/*
 function validateVolunteer(volunteer) {
     const schema = {
         firstName: Joi.string().min(3).max(10).required(),
