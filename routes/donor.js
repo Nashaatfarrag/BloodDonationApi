@@ -83,9 +83,12 @@ router.delete("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-   Donor.findById(req.params.id, (err , donor) => {
+   const donor = Donor.findById(req.params.id, (err , donor) => {
     if (err)  console.log(err)
     donor.basicInfo.birthDate = req.body.birthDate;
+    donor.save( err => {
+      if(err) console.log(err);
+    });
     res.send(donor);
    });
   
