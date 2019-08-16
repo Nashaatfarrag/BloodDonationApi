@@ -38,7 +38,7 @@ router.post("/", (req, res) => {
   const createdDonor = {
     name: req.body.name,
     bloodType: req.body.bloodType,
-    gender: req.body.gender,
+
     imgUrl: req.body.imgUrl,
     contactInfo: {
       tel: req.body.contactInfo.tel,
@@ -46,7 +46,8 @@ router.post("/", (req, res) => {
     },
     basicInfo: {
       nationalId: req.body.basicInfo.nationalId,
-      birthDate: req.body.basicInfo.birthDate
+      birthDate: req.body.basicInfo.birthDate,
+      gender: req.body.basicInfo.gender
     }
     // donation: {
     //   available: req.body.donation.available,
@@ -83,15 +84,15 @@ router.delete("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-   const donor = Donor.findById(req.params.id, (err , donor) => {
-    if (err)  console.log(err)
-    donor.basicInfo.birthDate = req.body.birthDate;
-    donor.save( err => {
-      if(err) console.log(err);
+  const donor = Donor.findById(req.params.id, (err, donor) => {
+    if (err) console.log(err);
+      donor.basicInfo.gender = req.body.gender ;
+    donor.save(err => {
+      if (err) console.log(err.message);
     });
     res.send(donor);
-   });
-  
+  });
+
   //console.log(volunteers);
   //startupDebugger("put method is used ... ");
   /*

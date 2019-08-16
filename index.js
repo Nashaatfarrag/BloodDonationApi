@@ -8,7 +8,7 @@ var corsOptions = {
     origin: 'https://gracious-visvesvaraya-237cb1.netlify.com',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
-app.use(morgan("tiny"));
+//app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cors());
 
