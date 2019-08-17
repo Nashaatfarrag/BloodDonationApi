@@ -14,8 +14,9 @@ router.get("/", (req, res) => {
   getAllDonor();
 });
 
-router.get("/:id", (req, res) => {
-  Donor.findById(req.params.id, (error, post) => {
+router.get("/:tel", (req, res) => {
+  //console.log(req.params.tel);
+  Donor.findOne({ 'contactInfo.tel' : req.params.tel} ,'name contactInfo' , (error, post) => {
     if (error) console.error(error);
 
     res.send(post);
@@ -48,12 +49,11 @@ router.post("/", (req, res) => {
       nationalId: req.body.basicInfo.nationalId,
       birthDate: req.body.basicInfo.birthDate,
       gender: req.body.basicInfo.gender
+    },
+    donationDates: {
+      when : req.body.donationDates.when ,
+      toWhom : req.body.donationDates.toWhom
     }
-    // donation: {
-    //   available: req.body.donation.available,
-    //   donationTimes: req.body.donation.donationTimes
-    //   lastDonation: req.body.donation.lastDonation
-    // }
   };
   // console.log(createdDonor);
   Donor.create(createdDonor)
@@ -86,7 +86,11 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const donor = Donor.findById(req.params.id, (err, donor) => {
     if (err) console.log(err);
-      donor.basicInfo.gender = req.body.gender ;
+    donor.basicInfo.gender = req.body.gender;
+    donor.donationDates.push({
+      when : req.body.when ,
+      toWhom : req.body.toWhom
+    })
     donor.save(err => {
       if (err) console.log(err.message);
     });

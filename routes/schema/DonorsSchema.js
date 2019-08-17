@@ -10,21 +10,22 @@ const donorSchema = new mongoose.Schema({
   name: String,
   bloodType: String,
   contactInfo: {
-    tel: String,
+    tel: { type: String, required: true },
     mail: String
   },
   imgUrl: String,
   basicInfo: {
-    nationalId: { type: Number , required: true , unique : true },
+    nationalId: { type: Number,  },
     birthDate: Date,
     gender: String,
-    Address: { type :String , default : "Tatay-Santa-Gharbyia"}
+    Address: { type: String, default: "Tatay-Santa-Gharbyia" }
   },
-  donation: {
-    available: Boolean,
-    donationTimes: Number,
-    lastDonation: Date
-  }
+  donationDates: [
+    {
+      when: Date,
+      toWhom: String
+    }
+  ]
 });
 
 const Donor = mongoose.model("DonorTable", donorSchema);
