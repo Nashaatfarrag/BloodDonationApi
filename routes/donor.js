@@ -93,7 +93,10 @@ router.put("/:id", (req, res) => {
     if (req.body.gender) {
       donor.basicInfo.gender = req.body.gender;
     }
-    if (req.body.when) {
+
+    if (req.body.when === "remove") {
+      if (donor.donationDates.length) donor.donationDates.pop();
+    } else if (req.body.when !== null) {
       donor.donationDates.push({
         when: req.body.when,
         toWhom: req.body.toWhom
@@ -118,11 +121,7 @@ function validateVolunteer(volunteer) {
       .min(3)
       .max(10)
       .required(),
-    age: Joi.allow(),
-    joinDate: Joi.allow(),
-    position: Joi.allow(),
-    skills: Joi.allow(),
-    committee: Joi.allow()
+    age: Joi.allow()
   };
   return Joi.validate(volunteer, schema);
 }
