@@ -16,11 +16,15 @@ router.get("/", (req, res) => {
 
 router.get("/:tel", (req, res) => {
   //console.log(req.params.tel);
-  Donor.findOne({ 'contactInfo.tel' : req.params.tel} ,'name contactInfo' , (error, post) => {
-    if (error) console.error(error);
+  Donor.findOne(
+    { "contactInfo.tel": req.params.tel },
+    "name contactInfo",
+    (error, post) => {
+      if (error) console.error(error);
 
-    res.send(post);
-  });
+      res.send(post);
+    }
+  );
   // let id = req.params.id;
   // async function getDonor() {
   //   let donor = await Donor.findOne({ "basicInfo.nationalId": parseInt(id) })
@@ -51,8 +55,8 @@ router.post("/", (req, res) => {
       gender: req.body.basicInfo.gender
     },
     donationDates: {
-      when : req.body.donationDates.when ,
-      toWhom : req.body.donationDates.toWhom
+      when: req.body.donationDates.when,
+      toWhom: req.body.donationDates.toWhom
     }
   };
   // console.log(createdDonor);
@@ -86,57 +90,42 @@ router.delete("/:id", (req, res) => {
 router.put("/:id", (req, res) => {
   const donor = Donor.findById(req.params.id, (err, donor) => {
     if (err) console.log(err);
-    donor.basicInfo.gender = req.body.gender;
-    donor.donationDates.push({
-      when : req.body.when ,
-      toWhom : req.body.toWhom
-    })
+    if (req.body.gender) {
+      donor.basicInfo.gender = req.body.gender;
+    }
+    if (req.body.when) {
+      donor.donationDates.push({
+        when: req.body.when,
+        toWhom: req.body.toWhom
+      });
+    }
     donor.save(err => {
       if (err) console.log(err.message);
     });
     res.send(donor);
   });
 
-  //console.log(volunteers);
-  //startupDebugger("put method is used ... ");
-  /*
-  let editedDonor = {
-    name: req.body.name,
-    bloodType: req.body.bloodType,
-    gender: req.body.gender,
-    imgUrl: req.body.imgUrl,
-    contactInfo: {
-      tel: req.body.contactInfo.tel,
-      mail: req.body.contactInfo.mail
-    },
-    basicInfo: {
-      nationalId: req.body.basicInfo.nationalId,
-      birthDate: req.body.basicInfo.birthDate
-    }
-    // donation: {
-    //   available: req.body.donation.available,
-    //   donationTimes: req.body.donation.donationTimes,
-    //   lastDonation: req.body.donation.lastDonation
-    // }
-  };
-  donor.basicInfo = editedDonor.basicInfo;
-*/
   //res.send(donor);
 });
-/*
+
 function validateVolunteer(volunteer) {
-    const schema = {
-        firstName: Joi.string().min(3).max(10).required(),
-        lastName: Joi.string().min(3).max(10).required(),
-        age: Joi.allow(),
-        joinDate: Joi.allow(),
-        position: Joi.allow(),
-        skills: Joi.allow(),
-        committee: Joi.allow()
-    }
-    return Joi.validate(volunteer, schema);
+  const schema = {
+    firstName: Joi.string()
+      .min(3)
+      .max(10)
+      .required(),
+    lastName: Joi.string()
+      .min(3)
+      .max(10)
+      .required(),
+    age: Joi.allow(),
+    joinDate: Joi.allow(),
+    position: Joi.allow(),
+    skills: Joi.allow(),
+    committee: Joi.allow()
+  };
+  return Joi.validate(volunteer, schema);
 }
-*/
 
 // Donor.create({
 //   name: {
