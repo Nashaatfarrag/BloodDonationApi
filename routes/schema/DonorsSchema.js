@@ -10,12 +10,12 @@ const donorSchema = new mongoose.Schema({
   name: String,
   bloodType: String,
   contactInfo: {
-    tel: { type: String, required: true },
+    tel: { type: String, required: true , index :  true },
     mail: String
   },
   imgUrl: String,
   basicInfo: {
-    nationalId: { type: Number,  },
+    nationalId: { type : Number , default : "21234567891234"},
     birthDate: Date,
     gender: String,
     Address: { type: String, default: "Tatay-Santa-Gharbyia" }

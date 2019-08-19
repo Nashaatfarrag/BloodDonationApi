@@ -50,19 +50,22 @@ router.post("/", (req, res) => {
       mail: req.body.contactInfo.mail
     },
     basicInfo: {
-      nationalId: req.body.basicInfo.nationalId,
+      //nationalId: req.body.basicInfo.nationalId,
       birthDate: req.body.basicInfo.birthDate,
       gender: req.body.basicInfo.gender
     },
-    donationDates: {
-      when: req.body.donationDates.when,
-      toWhom: req.body.donationDates.toWhom
-    }
+    // donationDates: {
+    //   when: req.body.donationDates.when,
+    //   toWhom: req.body.donationDates.toWhom
+    // }
   };
   // console.log(createdDonor);
   Donor.create(createdDonor)
     .then(res.send(createdDonor))
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err.errmsg);
+    }
+    );
 });
 
 router.delete("/:id", (req, res) => {
