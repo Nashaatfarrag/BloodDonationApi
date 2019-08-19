@@ -99,7 +99,7 @@ router.put("/:id", (req, res) => {
 
     if (req.body.when === "remove") {
       if (donor.donationDates.length) donor.donationDates.pop();
-    } else if (req.body.when !== null) {
+    } else if (req.body.when) {
       donor.donationDates.push({
         when: req.body.when,
         toWhom: req.body.toWhom
