@@ -15,7 +15,7 @@ const donorSchema = new mongoose.Schema({
   },
   imgUrl: String,
   basicInfo: {
-    nationalId: { type : Number , default : "21234567891234"},
+    //nationalId: { type : Number , default : "21234567891234"},
     birthDate: Date,
     gender: String,
     Address: { type: String, default: "Tatay-Santa-Gharbyia" }
