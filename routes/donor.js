@@ -114,20 +114,20 @@ router.put("/:id", (req, res) => {
   //res.send(donor);
 });
 
-function validateVolunteer(volunteer) {
-  const schema = {
-    firstName: Joi.string()
-      .min(3)
-      .max(10)
-      .required(),
-    lastName: Joi.string()
-      .min(3)
-      .max(10)
-      .required(),
-    age: Joi.allow()
-  };
-  return Joi.validate(volunteer, schema);
-}
+// function validateVolunteer(volunteer) {
+//   const schema = {
+//     firstName: Joi.string()
+//       .min(3)
+//       .max(10)
+//       .required(),
+//     lastName: Joi.string()
+//       .min(3)
+//       .max(10)
+//       .required(),
+//     age: Joi.allow()
+//   };
+//   return Joi.validate(volunteer, schema);
+// }
 
 // Donor.create({
 //   name: {
