@@ -50,7 +50,7 @@ router.post("/", (req, res) => {
       mail: req.body.contactInfo.mail
     },
     basicInfo: {
-      //nationalId: req.body.basicInfo.nationalId,
+      nationalId: req.body.contactInfo.tel,
       birthDate: req.body.basicInfo.birthDate,
       gender: req.body.basicInfo.gender
     },
