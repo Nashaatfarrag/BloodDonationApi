@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-let dataBaseURI =
-  "mongodb+srv://brad123:brad123@cluster0.otwbz.gcp.mongodb.net/Blood?retryWrites=true&w=majority";
+let dataBaseURI = "";
 mongoose
   .connect(process.env.MONGODB_URI || dataBaseURI, {
     useNewUrlParser: true,
