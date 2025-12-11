@@ -1,12 +1,22 @@
 const mongoose = require("mongoose");
-let dataBaseURI = "";
-mongoose
-  .connect(process.env.MONGODB_URI || dataBaseURI, {
-    useNewUrlParser: true,
-    // useUnifiedTopology: true,
-  })
-  .then(() => console.log("connected to db successfully"))
-  .catch((err) => console.log(err.errmsg));
+
+// Connection options
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 10000,
+  retryWrites: true,
+};
+
+// Only connect if MONGODB_URI is provided
+if (process.env.MONGODB_URI) {
+  mongoose
+    .connect(process.env.MONGODB_URI, mongooseOptions)
+    .then(() => console.log("connected to db successfully"))
+    .catch((err) => console.error("MongoDB connection error:", err.message));
+} else {
+  console.warn("WARNING: MONGODB_URI environment variable not set. Database operations will fail.");
+}
 
 const donorSchema = new mongoose.Schema({
   name: String,

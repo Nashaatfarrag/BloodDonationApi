@@ -1,98 +1,78 @@
 const express = require("express");
-var ObjectId = require("mongodb").ObjectID;
 const router = express.Router();
 const Donor = require("./schema/DonorsSchema");
 router.use(express.json());
 
-router.get("/", (req, res) => {
-  // const sortBy = req.query.sortBy;
-  async function getAllDonor() {
+router.get("/", async (req, res) => {
+  try {
     const donors = await Donor.find();
-    res.send(donors).status(200);
-    //console.log(donors);
+    res.status(200).send(donors);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error.message });
   }
-  getAllDonor();
 });
 
-router.get("/:tel", (req, res) => {
-  //console.log(req.params.tel);
-  Donor.findOne(
-    { "contactInfo.tel": req.params.tel },
-    "name contactInfo",
-    (error, post) => {
-      if (error) console.error(error);
-
-      res.send(post);
-    }
-  );
-  // let id = req.params.id;
-  // async function getDonor() {
-  //   let donor = await Donor.findOne({ "basicInfo.nationalId": parseInt(id) })
-  //     .then(() => {
-  //       res.send(donor).status(200);
-  //     })
-  //     .catch(err => {
-  //       console.log(err.message);
-  //     });
-  // }
-  // getDonor();
-});
-
-router.post("/", (req, res) => {
-  // console.log(req.header);
-  const createdDonor = {
-    name: req.body.name,
-    bloodType: req.body.bloodType,
-
-    imgUrl: req.body.imgUrl,
-    contactInfo: {
-      tel: req.body.contactInfo.tel,
-      mail: req.body.contactInfo.mail
-    },
-    basicInfo: {
-      nationalId: req.body.contactInfo.tel,
-      birthDate: req.body.basicInfo.birthDate,
-      gender: req.body.basicInfo.gender
-    },
-    // donationDates: {
-    //   when: req.body.donationDates.when,
-    //   toWhom: req.body.donationDates.toWhom
-    // }
-  };
-  // console.log(createdDonor);
-  Donor.create(createdDonor)
-    .then(res.send(createdDonor))
-    .catch(err => {
-      console.log(err.errmsg);
-    }
+router.get("/:tel", async (req, res) => {
+  try {
+    const donor = await Donor.findOne(
+      { "contactInfo.tel": req.params.tel },
+      "name contactInfo"
     );
-});
-
-router.delete("/:id", (req, res) => {
-  const idDeleted = req.params.id;
-  //console.log(idDeleted);
-  async function removeDocument(idDeleted) {
-    try {
-      const result = await Donor.findOneAndDelete(
-        {
-          _id: idDeleted
-        },
-        {
-          returnOriginal: false
-        }
-      );
-      return result.value;
-    } catch (err) {
-      console.log(err);
-    }
+    res.status(200).send(donor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error.message });
   }
-  removeDocument(idDeleted);
-  res.sendStatus(200);
 });
 
-router.put("/:id", (req, res) => {
-  const donor = Donor.findById(req.params.id, (err, donor) => {
-    if (err) console.log(err);
+router.post("/", async (req, res) => {
+  try {
+    const createdDonor = {
+      name: req.body.name,
+      bloodType: req.body.bloodType,
+      imgUrl: req.body.imgUrl,
+      contactInfo: {
+        tel: req.body.contactInfo.tel,
+        mail: req.body.contactInfo.mail
+      },
+      basicInfo: {
+        nationalId: req.body.contactInfo.tel,
+        birthDate: req.body.basicInfo.birthDate,
+        gender: req.body.basicInfo.gender
+      }
+    };
+    const donor = await Donor.create(createdDonor);
+    res.status(201).send(donor);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({ error: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const result = await Donor.findOneAndDelete(
+      { _id: req.params.id },
+      { returnDocument: "after" }
+    );
+    if (!result) {
+      return res.status(404).send({ error: "Donor not found" });
+    }
+    res.status(200).send({ message: "Donor deleted", donor: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err.message });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const donor = await Donor.findById(req.params.id);
+    if (!donor) {
+      return res.status(404).send({ error: "Donor not found" });
+    }
+
     if (req.body.gender) {
       donor.basicInfo.gender = req.body.gender;
     }
@@ -105,13 +85,13 @@ router.put("/:id", (req, res) => {
         toWhom: req.body.toWhom
       });
     }
-    donor.save(err => {
-      if (err) console.log(err.message);
-    });
-    res.send(donor);
-  });
 
-  //res.send(donor);
+    await donor.save();
+    res.status(200).send(donor);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err.message });
+  }
 });
 
 // function validateVolunteer(volunteer) {

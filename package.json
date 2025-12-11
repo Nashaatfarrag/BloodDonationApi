@@ -12,9 +12,10 @@
     "arabic-reshaper": "^1.1.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.16.4",
     "lodash": "^4.17.21",
-    "mongoose": "^5.7.5",
+    "mongoose": "^9.0.1",
     "morgan": "^1.9.1"
   }
 }
