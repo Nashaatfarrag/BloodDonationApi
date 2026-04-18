@@ -16,8 +16,7 @@ router.get("/", async (req, res) => {
 router.get("/:tel", async (req, res) => {
   try {
     const donor = await Donor.findOne(
-      { "contactInfo.tel": req.params.tel },
-      "name contactInfo"
+      { "contactInfo.tel": req.params.tel }
     );
     res.status(200).send(donor);
   } catch (error) {
