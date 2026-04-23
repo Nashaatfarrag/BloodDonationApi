@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<meta name='description' content='Al Mokhtabar complete medical tests and packages catalog with prices in EGP.'>
+<title>Al Mokhtabar - Tests &amp; Packages Catalog</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap' rel='stylesheet'>
+<style>
+:root {
+  --primary: #1a5276;
+  --secondary: #2980b9;
+  --accent: #e74c3c;
+  --green: #27ae60;
+  --dark: #2c3e50;
+  --muted: #7f8c8d;
+  --light-bg: #f0f4f8;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --glass: rgba(255,255,255,0.7);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter','Noto Sans Arabic',sans-serif; color:var(--dark); background:var(--light-bg); line-height:1.5; }
+
+/* ── Navbar ── */
+.navbar { position:sticky; top:0; z-index:100; background:rgba(26,82,118,0.95); backdrop-filter:blur(12px); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 20px rgba(0,0,0,0.15); }
+.navbar h1 { color:#fff; font-size:18px; font-weight:700; }
+.navbar h1 span { color:#aed6f1; font-weight:400; font-size:13px; margin-left:8px; }
+.nav-search { display:flex; align-items:center; gap:8px; }
+.nav-search input { padding:8px 14px; border-radius:8px; border:none; font-size:13px; width:260px; background:rgba(255,255,255,0.15); color:#fff; outline:none; transition:all 0.3s; }
+.nav-search input::placeholder { color:rgba(255,255,255,0.5); }
+.nav-search input:focus { background:rgba(255,255,255,0.25); width:320px; }
+.nav-badge { background:var(--accent); color:#fff; font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600; }
+
+/* ── Cover ── */
+.cover { background:linear-gradient(135deg,#1a5276 0%,#2980b9 50%,#3498db 100%); padding:60px 24px 50px; text-align:center; color:#fff; position:relative; overflow:hidden; }
+.cover::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(255,255,255,0.05) 1px,transparent 1px); background-size:30px 30px; animation:drift 20s linear infinite; }
+@keyframes drift { to { transform:translate(30px,30px); } }
+.cover h1 { font-size:48px; font-weight:700; position:relative; }
+.cover .ar { font-family:'Noto Sans Arabic',sans-serif; font-size:24px; opacity:0.7; margin-top:4px; position:relative; }
+.cover p { font-size:16px; opacity:0.8; margin-top:8px; position:relative; }
+.stats-row { display:flex; justify-content:center; gap:16px; margin-top:36px; flex-wrap:wrap; position:relative; }
+.stat-card { background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.2); border-radius:14px; padding:20px 32px; text-align:center; min-width:150px; transition:transform 0.2s; }
+.stat-card:hover { transform:translateY(-4px); }
+.stat-card .val { font-size:32px; font-weight:700; }
+.stat-card .lbl { font-size:11px; opacity:0.7; margin-top:2px; }
+
+/* ── Section ── */
+.section { max-width:1100px; margin:30px auto; padding:0 16px; }
+.section-header { background:var(--primary); color:#fff; padding:14px 20px; border-radius:10px 10px 0 0; display:flex; justify-content:space-between; align-items:center; }
+.section-header h2 { font-size:18px; }
+.section-header .count { background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:20px; font-size:12px; }
+
+/* ── Table ── */
+.table-wrap { overflow-x:auto; background:var(--card-bg); border-radius:0 0 10px 10px; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th { background:var(--primary); color:#fff; padding:10px 14px; text-align:left; font-size:12px; font-weight:600; position:sticky; top:0; }
+thead th.ar { text-align:right; direction:rtl; }
+thead th.price-col { text-align:center; }
+tbody td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; transition:background 0.15s; }
+tbody tr:nth-child(even) { background:#f8fafc; }
+tbody tr:hover { background:#eef5fb; }
+tbody td.num { text-align:center; color:var(--muted); font-size:11px; width:40px; }
+tbody td.ar-cell { text-align:right; direction:rtl; font-family:'Noto Sans Arabic','Inter',sans-serif; color:var(--secondary); }
+tbody td.price { text-align:center; color:var(--accent); font-weight:700; font-size:14px; }
+tbody td.prep { font-size:11px; color:var(--muted); max-width:200px; }
+.no-results { padding:40px; text-align:center; color:var(--muted); font-size:14px; display:none; }
+
+/* ── Package Cards ── */
+.pkg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; margin-top:16px; }
+.pkg-card { background:var(--card-bg); border:1px solid var(--border); border-left:4px solid var(--secondary); border-radius:10px; padding:20px; transition:transform 0.2s,box-shadow 0.2s; }
+.pkg-card:hover { transform:translateY(-3px); box-shadow:0 8px 25px rgba(0,0,0,0.08); }
+.pkg-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.pkg-name { font-size:15px; font-weight:700; color:var(--primary); }
+.pkg-price { background:var(--accent); color:#fff; padding:5px 16px; border-radius:6px; font-weight:700; font-size:14px; white-space:nowrap; }
+.pkg-tests { margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
+.pkg-test-tag { font-size:11px; color:var(--dark); background:var(--light-bg); padding:3px 10px; border-radius:20px; border:1px solid var(--border); }
+.pkg-test-tag::before { content:'● '; color:var(--green); font-size:8px; }
+
+/* ── Summary Cards ── */
+.sum-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-top:16px; }
+.sum-card { border-radius:12px; padding:20px; color:#fff; text-align:center; transition:transform 0.2s; }
+.sum-card:hover { transform:translateY(-3px); }
+.sum-card .sv { font-size:26px; font-weight:700; }
+.sum-card .sl { font-size:11px; opacity:0.8; margin-top:4px; }
+
+/* ── Top 10 ── */
+.top10 { margin-top:24px; }
+.top10 h3 { color:var(--primary); font-size:16px; margin-bottom:10px; }
+.top10-list { background:var(--card-bg); border-radius:10px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.top10-item { display:flex; align-items:center; padding:12px 20px; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.top10-item:hover { background:#fef5f5; }
+.top10-item:last-child { border-bottom:none; }
+.top10-rank { width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-right:14px; flex-shrink:0; }
+.top10-item:nth-child(1) .top10-rank { background:#f1c40f; color:#2c3e50; }
+.top10-item:nth-child(2) .top10-rank { background:#95a5a6; }
+.top10-item:nth-child(3) .top10-rank { background:#cd6133; }
+.top10-name { flex:1; font-weight:500; }
+.top10-price { color:var(--accent); font-weight:700; font-size:15px; }
+
+/* ── Print ── */
+@media print {
+  .navbar,.nav-search { display:none!important; }
+  .cover { padding:30px; }
+  .section { margin:10px auto; }
+  .pkg-card,.top10-item { break-inside:avoid; }
+  tbody tr:hover { background:transparent; }
+}
+
+/* ── Responsive ── */
+@media (max-width:640px) {
+  .cover h1 { font-size:32px; }
+  .stat-card { min-width:120px; padding:14px 20px; }
+  .stat-card .val { font-size:24px; }
+  .nav-search input { width:160px; }
+  .pkg-grid { grid-template-columns:1fr; }
+}
+
+/* ── Scroll to top ── */
+.scroll-top { position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--primary); color:#fff; border:none; font-size:20px; cursor:pointer; box-shadow:0 4px 15px rgba(0,0,0,0.2); opacity:0; transition:opacity 0.3s,transform 0.2s; pointer-events:none; z-index:50; }
+.scroll-top.show { opacity:1; pointer-events:auto; }
+.scroll-top:hover { transform:scale(1.1); }
+</style>
+</head>
+<body>
+
+<nav class='navbar'>
+  <h1>Al Mokhtabar <span>Tests Catalog</span></h1>
+  <div class='nav-search'>
+    <input type='text' id='searchInput' placeholder='Search tests...' oninput='filterTests()'>
+    <span class='nav-badge' id='resultCount'>263 tests</span>
+  </div>
+</nav>
+
+<div class='cover'>
+  <h1>Al Mokhtabar</h1>
+  <div class='ar'>المختبر</div>
+  <p>Complete Medical Tests &amp; Packages Catalog</p>
+  <div class='stats-row'>
+    <div class='stat-card'><div class='val'>263</div><div class='lbl'>Medical Tests</div></div>
+    <div class='stat-card'><div class='val'>8</div><div class='lbl'>Packages</div></div>
+    <div class='stat-card'><div class='val'>EGP 165–13720</div><div class='lbl'>Price Range</div></div>
+    <div class='stat-card'><div class='val'>Apr 23, 2026</div><div class='lbl'>Last Updated</div></div>
+  </div>
+</div>
+
+<div class='section'>
+  <div class='section-header'><h2>Medical Tests</h2><span class='count'>263 tests</span></div>
+  <div class='table-wrap'>
+    <table>
+      <thead><tr><th>#</th><th>Test Name</th><th class='ar'>الاسم بالعربي</th><th class='price-col'>EGP</th><th>Preparations</th></tr></thead>
+      <tbody id='testsBody'>
+        <tr><td class="num">1</td><td>CPK - Total</td><td class="ar-cell">إنزيم فوسفو كينز</td><td class="price">330</td><td class="prep">—</td></tr>
+        <tr><td class="num">2</td><td>Amylase</td><td class="ar-cell">اميليز فى المصل</td><td class="price">435</td><td class="prep">التحليل بيتعمل صباحا فقط</td></tr>
+        <tr><td class="num">3</td><td>Lipase</td><td class="ar-cell">ليبيز</td><td class="price">490</td><td class="prep">—</td></tr>
+        <tr><td class="num">4</td><td>Fasting Blood Glucose</td><td class="ar-cell">Fasting Blood Glucose</td><td class="price">165</td><td class="prep">—</td></tr>
+        <tr><td class="num">5</td><td>Blood Urea</td><td class="ar-cell">Blood Urea</td><td class="price">180</td><td class="prep">—</td></tr>
+        <tr><td class="num">6</td><td>Alk.phosphatase</td><td class="ar-cell">فوسفاتيز قلوى</td><td class="price">220</td><td class="prep">—</td></tr>
+        <tr><td class="num">7</td><td>Bilirubin ( T&amp;D )</td><td class="ar-cell">Bilirubin ( T&amp;D )</td><td class="price">345</td><td class="prep">—</td></tr>
+        <tr><td class="num">8</td><td>BUN</td><td class="ar-cell">BUN</td><td class="price">180</td><td class="prep">—</td></tr>
+        <tr><td class="num">9</td><td>Calcium</td><td class="ar-cell">كالسيوم بالمصل</td><td class="price">260</td><td class="prep">—</td></tr>
+        <tr><td class="num">10</td><td>Chloride</td><td class="ar-cell">Chloride</td><td class="price">260</td><td class="prep">—</td></tr>
+        <tr><td class="num">11</td><td>Creatinine, serum</td><td class="ar-cell">كرياتنين بالمصل</td><td class="price">165</td><td class="prep">—</td></tr>
+        <tr><td class="num">12</td><td>Gamma GT</td><td class="ar-cell">Gamma GT</td><td class="price">245</td><td class="prep">—</td></tr>
+        <tr><td class="num">13</td><td>HDL-C</td><td class="ar-cell"> كوليستيرول عالى الكثافة</td><td class="price">190</td><td class="prep">—</td></tr>
+        <tr><td class="num">14</td><td>Phosphorous</td><td class="ar-cell">Phosphorous</td><td class="price">250</td><td class="prep">—</td></tr>
+        <tr><td class="num">15</td><td>K+</td><td class="ar-cell">بوتاسيوم بالمصل</td><td class="price">255</td><td class="prep">—</td></tr>
+        <tr><td class="num">16</td><td>SGOT (AST)</td><td class="ar-cell">SGOT (AST)</td><td class="price">165</td><td class="prep">—</td></tr>
+        <tr><td class="num">17</td><td>SGPT (ALT)</td><td class="ar-cell">SGPT (ALT)</td><td class="price">165</td><td class="prep">—</td></tr>
+        <tr><td class="num">18</td><td>Na</td><td class="ar-cell">نسبة الصوديوم فى الدم</td><td class="price">255</td><td class="prep">—</td></tr>
+        <tr><td class="num">19</td><td>Triglyceride</td><td class="ar-cell">دهون ثلاثية</td><td class="price">235</td><td class="prep">—</td></tr>
+        <tr><td class="num">20</td><td>ASOT</td><td class="ar-cell">ASOT</td><td class="price">435</td><td class="prep">—</td></tr>
+        <tr><td class="num">21</td><td>Blood Grouping (ABO&amp;Rh)</td><td class="ar-cell">Blood Grouping (ABO&amp;Rh)</td><td class="price">375</td><td class="prep">—</td></tr>
+        <tr><td class="num">22</td><td>Coomb's Test &quot;Direct&quot;</td><td class="ar-cell">Coomb's Test &quot;Direct&quot;</td><td class="price">465</td><td class="prep">—</td></tr>
+        <tr><td class="num">23</td><td>HBsAg by Chemiluminescent technology</td><td class="ar-cell">الأنتيجن (إس) لفيروس ( بى )</td><td class="price">480</td><td class="prep">—</td></tr>
+        <tr><td class="num">24</td><td>HIV Antibody (AIDS Test)</td><td class="ar-cell">الأجسام المضادة للفيروس المسبب للأيدز</td><td class="price">760</td><td class="prep">—</td></tr>
+        <tr><td class="num">25</td><td>Reticulocytic Count</td><td class="ar-cell">عد خلايا شبكية</td><td class="price">215</td><td class="prep">—</td></tr>
+        <tr><td class="num">26</td><td>VDRL</td><td class="ar-cell">اختبار ( فى  - دى - أر – أل )</td><td class="price">625</td><td class="prep">—</td></tr>
+        <tr><td class="num">27</td><td>Protein in 24 hrs Urine</td><td class="ar-cell">بروتين بالبول 24 ساعة</td><td class="price">290</td><td class="prep">—</td></tr>
+        <tr><td class="num">28</td><td>Creatinine Clearance</td><td class="ar-cell">استخلاص كرياتينين بالبول</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">29</td><td>CRP (Quantitative)</td><td class="ar-cell">بروتين - سى - المتفاعل الكمى</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">30</td><td>Vitamin B12 (Cyanocobalamin) Level in  serum</td><td class="ar-cell">VIT B12</td><td class="price">2160</td><td class="prep">—</td></tr>
+        <tr><td class="num">31</td><td>Estradiol E2 in serum</td><td class="ar-cell">هرمون استروجين</td><td class="price">475</td><td class="prep">—</td></tr>
+        <tr><td class="num">32</td><td>Folic Acid Level in serum</td><td class="ar-cell">Folic Acid</td><td class="price">1805</td><td class="prep">—</td></tr>
+        <tr><td class="num">33</td><td>FSH(Follicle Stimulating Hormone) in serum</td><td class="ar-cell">هرمون أف ‏‎–‎‏ اس ‏‎–‎‏ اتش</td><td class="price">425</td><td class="prep">—</td></tr>
+        <tr><td class="num">34</td><td>Free T3  in serum</td><td class="ar-cell">هرمون تى 3 الحر بالمصل</td><td class="price">385</td><td class="prep">—</td></tr>
+        <tr><td class="num">35</td><td>Free T4  in serum</td><td class="ar-cell">هرمون تى 4 الحر بالمصل</td><td class="price">385</td><td class="prep">—</td></tr>
+        <tr><td class="num">36</td><td>TSH in  serum</td><td class="ar-cell">تحليل هرمون ( تى ‏‎–‎اس ‏‎–‎‏ اتش )</td><td class="price">385</td><td class="prep">—</td></tr>
+        <tr><td class="num">37</td><td>Total HCG (Quantitative)</td><td class="ar-cell">Beta Subunit HCG (Quantitative)</td><td class="price">465</td><td class="prep">—</td></tr>
+        <tr><td class="num">38</td><td>Homocysteine &quot;Serum&quot;</td><td class="ar-cell">Homocysteine &quot;Serum &quot;</td><td class="price">1235</td><td class="prep">—</td></tr>
+        <tr><td class="num">39</td><td>Insulin (Fasting)  in serum</td><td class="ar-cell">اختبار الأنسولين صائم بالدم</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">40</td><td>Insulin after 2 hours in serum</td><td class="ar-cell">اختبار الأنسولين فاطر</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">41</td><td>LH(Luteinizing Hormone) in serum</td><td class="ar-cell">هرمون ليتينزينج</td><td class="price">465</td><td class="prep">—</td></tr>
+        <tr><td class="num">42</td><td>Progesterone in serum</td><td class="ar-cell">Progesterone</td><td class="price">460</td><td class="prep">—</td></tr>
+        <tr><td class="num">43</td><td>Prolactin in serum </td><td class="ar-cell">Prolactin</td><td class="price">420</td><td class="prep">—</td></tr>
+        <tr><td class="num">44</td><td>PSA-Total</td><td class="ar-cell">بروستاتيك أنتيجين كلى</td><td class="price">715</td><td class="prep">—</td></tr>
+        <tr><td class="num">45</td><td>Testosterone  in  serum</td><td class="ar-cell">Testosterone-Total</td><td class="price">430</td><td class="prep">—</td></tr>
+        <tr><td class="num">46</td><td>Clotting Time (CT)</td><td class="ar-cell">Clotting Time</td><td class="price">180</td><td class="prep">—</td></tr>
+        <tr><td class="num">47</td><td>Prothrombin Time (PT)</td><td class="ar-cell">Prothrombin Time (PT)</td><td class="price">310</td><td class="prep">—</td></tr>
+        <tr><td class="num">48</td><td>Activated  Partial Thromboplastine  Time APTT</td><td class="ar-cell">PTT</td><td class="price">305</td><td class="prep">—</td></tr>
+        <tr><td class="num">49</td><td>Stool Analysis</td><td class="ar-cell">Stool Analysis</td><td class="price">185</td><td class="prep">—</td></tr>
+        <tr><td class="num">50</td><td>Occult Blood In Stool</td><td class="ar-cell">Occult Blood In Stool</td><td class="price">325</td><td class="prep">—</td></tr>
+        <tr><td class="num">51</td><td>17-Alpha Hydroxyprogesterone in serum</td><td class="ar-cell">‏17- ألفا هيدروكسى بروجسيتيرون</td><td class="price">775</td><td class="prep">—</td></tr>
+        <tr><td class="num">52</td><td>ACE in Serum</td><td class="ar-cell">ACE</td><td class="price">2090</td><td class="prep">—</td></tr>
+        <tr><td class="num">53</td><td>ACTH am  in plasma</td><td class="ar-cell">الهرمون المنشط للغدة الكظرية  ( 9 م ) اا</td><td class="price">560</td><td class="prep">—</td></tr>
+        <tr><td class="num">54</td><td>Amphetamine Screen</td><td class="ar-cell">Amphetamine Screen</td><td class="price">690</td><td class="prep">—</td></tr>
+        <tr><td class="num">55</td><td>ANCA (Cytoplasmic)</td><td class="ar-cell">ANCA (Cytoplasmic)</td><td class="price">2005</td><td class="prep">—</td></tr>
+        <tr><td class="num">56</td><td>HAV IgG</td><td class="ar-cell">اجسام مضادة (جى) للإلتهاب الكبدى الوبائى أ</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">57</td><td>HBc, total</td><td class="ar-cell">الأجسام المضادة الكلية لمعامل (سى) الخاص بالتهاب كبدى (بى)</td><td class="price">430</td><td class="prep">—</td></tr>
+        <tr><td class="num">58</td><td>HBc IgM</td><td class="ar-cell">الأجسام المضادة (أم) لمعامل (سى) الخاص بالتهاب كبدى (بى)</td><td class="price">430</td><td class="prep">—</td></tr>
+        <tr><td class="num">59</td><td>ASMA</td><td class="ar-cell">ASMA</td><td class="price">895</td><td class="prep">—</td></tr>
+        <tr><td class="num">60</td><td>Anti Thyroglobulin Ab.</td><td class="ar-cell">الأجسام المضادة لبروتينات للغدة الدرقية</td><td class="price">655</td><td class="prep">—</td></tr>
+        <tr><td class="num">61</td><td>C-Peptide (Fasting) in serum </td><td class="ar-cell">مستوى سى ‏‎–‎‏ ببتيد (صائم</td><td class="price">950</td><td class="prep">—</td></tr>
+        <tr><td class="num">62</td><td>C3</td><td class="ar-cell">كوبيلمينت (سى3 )</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">63</td><td>C4</td><td class="ar-cell">كوبيليمنت ( سى4 )</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">64</td><td>CA 19-9</td><td class="ar-cell">كارسينوانتيجن ( 19- 9 )</td><td class="price">1090</td><td class="prep">—</td></tr>
+        <tr><td class="num">65</td><td>Anti-Cardiolipin IgG (ACL)</td><td class="ar-cell">Anti-Cardiolipin IgG</td><td class="price">710</td><td class="prep">—</td></tr>
+        <tr><td class="num">66</td><td>Anti-Cardiolipin IgM (ACL)</td><td class="ar-cell">Anti-Cardiolipin IgM</td><td class="price">630</td><td class="prep">—</td></tr>
+        <tr><td class="num">67</td><td>Anti C.C.P. Antibodies</td><td class="ar-cell">Anti C.C.P. Antibodies</td><td class="price">1715</td><td class="prep">—</td></tr>
+        <tr><td class="num">68</td><td>Ceruloplasmin</td><td class="ar-cell">Ceruloplasmin</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">69</td><td>CMV IgG</td><td class="ar-cell">الأجسام المضادة للسيتوميجالو فيرس (جى)</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">70</td><td>CMV IgM</td><td class="ar-cell">الأجسام اللمضادة للسيتوميجالو فيرس (ام)</td><td class="price">470</td><td class="prep">تجميع بول 24 ساعه ومعرفه المريض للوزن والطول (ويتم اخذ عينه دم لفحص اليوريا في الدم)</td></tr>
+        <tr><td class="num">71</td><td>Cortisol-Am in serum </td><td class="ar-cell">Cortisol-Am</td><td class="price">515</td><td class="prep">كلسترول منخفض الكثافه (ضار)</td></tr>
+        <tr><td class="num">72</td><td>Cortisol-Pm in serum </td><td class="ar-cell">Cortisol-Pm</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">73</td><td>D-dimer</td><td class="ar-cell">دى-ديمر</td><td class="price">1410</td><td class="prep">—</td></tr>
+        <tr><td class="num">74</td><td>DHEA-S ( Dehydroepiandrosterone Sulfate ) in serum</td><td class="ar-cell">DHEA-S ( Dehydroepiandrosterone Sulfate )</td><td class="price">590</td><td class="prep">—</td></tr>
+        <tr><td class="num">75</td><td>ADNA (ds)</td><td class="ar-cell">الأجسام المضادة للحامض النواوى</td><td class="price">1065</td><td class="prep">—</td></tr>
+        <tr><td class="num">76</td><td>Toxicology panel</td><td class="ar-cell">Toxicology panel</td><td class="price">1580</td><td class="prep">—</td></tr>
+        <tr><td class="num">77</td><td>EBV IgM (VCA-IgM)</td><td class="ar-cell">EBV IgM (VCA-IgM)</td><td class="price">505</td><td class="prep">—</td></tr>
+        <tr><td class="num">78</td><td>Ferritin</td><td class="ar-cell">مستوى الفريتين</td><td class="price">570</td><td class="prep">—</td></tr>
+        <tr><td class="num">79</td><td>Fibrinogen Level</td><td class="ar-cell">فيبرونوجين</td><td class="price">425</td><td class="prep">—</td></tr>
+        <tr><td class="num">80</td><td>Fungus Culture</td><td class="ar-cell">مزرعة فطريات</td><td class="price">925</td><td class="prep">—</td></tr>
+        <tr><td class="num">81</td><td>G6PD Quantitative</td><td class="ar-cell">G6PD Quantitative</td><td class="price">835</td><td class="prep">—</td></tr>
+        <tr><td class="num">82</td><td>Helicobacter pylori antibody</td><td class="ar-cell">Helicobacter pylori antibody</td><td class="price">1060</td><td class="prep">—</td></tr>
+        <tr><td class="num">83</td><td>HBeAg</td><td class="ar-cell">الأنتيجن (إى) لفيروس ( بى )</td><td class="price">385</td><td class="prep">—</td></tr>
+        <tr><td class="num">84</td><td>HLA-B27 typing</td><td class="ar-cell">اتش ‏‎–‎‏ ال ‏‎–‎‏ اية ‏‎–‎‏ فصيلة بى 27</td><td class="price">1935</td><td class="prep">لو حضرتك هتجهز العينة في البيت تكون في كوب معقم و توصل للفرع قبل مرور ساعتين و اخر ميعاد لاستلامها قبل قفل الفرع بساعة</td></tr>
+        <tr><td class="num">85</td><td>IgA</td><td class="ar-cell">IgA</td><td class="price">650</td><td class="prep">—</td></tr>
+        <tr><td class="num">86</td><td>IgG</td><td class="ar-cell">IgG</td><td class="price">565</td><td class="prep">—</td></tr>
+        <tr><td class="num">87</td><td>IgM</td><td class="ar-cell">IgM</td><td class="price">535</td><td class="prep">—</td></tr>
+        <tr><td class="num">88</td><td>Complete Blood Picture (CBC)</td><td class="ar-cell">صورة دم كامله</td><td class="price">380</td><td class="prep">—</td></tr>
+        <tr><td class="num">89</td><td>ESR</td><td class="ar-cell">سرعة ترسيب الدم</td><td class="price">235</td><td class="prep">—</td></tr>
+        <tr><td class="num">90</td><td>Platelet Count</td><td class="ar-cell">Platelet Count</td><td class="price">240</td><td class="prep">—</td></tr>
+        <tr><td class="num">91</td><td>ANA</td><td class="ar-cell">مستوى الأجسام المضادة للنواه</td><td class="price">650</td><td class="prep">—</td></tr>
+        <tr><td class="num">92</td><td>HAV IgM</td><td class="ar-cell">اجسام مضادة (ام) للإلتهاب الكبدى الوبائى أ</td><td class="price">495</td><td class="prep">—</td></tr>
+        <tr><td class="num">93</td><td>WIDAL Test</td><td class="ar-cell">WIDALTest</td><td class="price">470</td><td class="prep">—</td></tr>
+        <tr><td class="num">94</td><td>Urine Analysis</td><td class="ar-cell">تحليل بول كامل</td><td class="price">165</td><td class="prep">—</td></tr>
+        <tr><td class="num">95</td><td>Semen Analysis</td><td class="ar-cell">تحليل سائل منوى</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">96</td><td>Protein Electrophoresis in Serum</td><td class="ar-cell">Protein Electrophoresis in Serum</td><td class="price">590</td><td class="prep">—</td></tr>
+        <tr><td class="num">97</td><td>Protein - total</td><td class="ar-cell">اختبار بروتين س</td><td class="price">210</td><td class="prep">—</td></tr>
+        <tr><td class="num">98</td><td>Cytological examination</td><td class="ar-cell">فحص انسجة</td><td class="price">765</td><td class="prep">—</td></tr>
+        <tr><td class="num">99</td><td>Serum Iron</td><td class="ar-cell">اختبار الحديد بالمصل</td><td class="price">385</td><td class="prep">—</td></tr>
+        <tr><td class="num">100</td><td>Lithium</td><td class="ar-cell">Lithium</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">101</td><td>LKM-1 antibodies</td><td class="ar-cell">LKM-1</td><td class="price">1305</td><td class="prep">—</td></tr>
+        <tr><td class="num">102</td><td>MG</td><td class="ar-cell">MG</td><td class="price">395</td><td class="prep">—</td></tr>
+        <tr><td class="num">103</td><td>Cannabinoids Screen</td><td class="ar-cell">Cannabinoids Screen</td><td class="price">660</td><td class="prep">—</td></tr>
+        <tr><td class="num">104</td><td>AMA (M2)</td><td class="ar-cell">الأجسام المضادة للميتوكوندريا</td><td class="price">805</td><td class="prep">—</td></tr>
+        <tr><td class="num">105</td><td>Opiates Screen</td><td class="ar-cell">Opiates Screen</td><td class="price">690</td><td class="prep">—</td></tr>
+        <tr><td class="num">106</td><td>Rubella IgG</td><td class="ar-cell">الأجسام المضادة للحصبة الألمانية (جى)</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">107</td><td>Rubella IgM</td><td class="ar-cell">الأجسام المضادة للحصبة الألمانية (إم)</td><td class="price">455</td><td class="prep">—</td></tr>
+        <tr><td class="num">108</td><td>Sex Hormone Binding Globulin (SHBG  ) in  serum</td><td class="ar-cell">SHBG</td><td class="price">1350</td><td class="prep">—</td></tr>
+        <tr><td class="num">109</td><td>Stone Analysis</td><td class="ar-cell">تحليل حصوة</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">110</td><td>TIBC</td><td class="ar-cell">تحليل نسبة الحديد الكلية المرتبطة</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">111</td><td>Toxoplasmosis IgG</td><td class="ar-cell">اختبار التكسوبلازما (جى)</td><td class="price">405</td><td class="prep">—</td></tr>
+        <tr><td class="num">112</td><td>Toxoplasmosis IgM</td><td class="ar-cell">الأجسام المضادة للتكسوبلازما إم</td><td class="price">425</td><td class="prep">—</td></tr>
+        <tr><td class="num">113</td><td>TPHA</td><td class="ar-cell">اختبار تى ‏‎–‎‏ بى ‏‎–‎‏ اتش ‏‎–‎‏ ايه</td><td class="price">525</td><td class="prep">—</td></tr>
+        <tr><td class="num">114</td><td>TRANSFERRIN</td><td class="ar-cell">تحليل الترانسفيرين</td><td class="price">500</td><td class="prep">—</td></tr>
+        <tr><td class="num">115</td><td>Troponin I</td><td class="ar-cell">تروبونين أى</td><td class="price">1150</td><td class="prep">—</td></tr>
+        <tr><td class="num">116</td><td>Vanillyl Mandelic Acid (VMA in 24 hrs Urine)</td><td class="ar-cell">تحليل فى ‏‎–‎‏ ام ‏‎–‎‏ اية</td><td class="price">1420</td><td class="prep">—</td></tr>
+        <tr><td class="num">117</td><td>Parathyroid Hormone (PTH)</td><td class="ar-cell">Parathyroid Hormone (PTH)</td><td class="price">565</td><td class="prep">—</td></tr>
+        <tr><td class="num">118</td><td>IMMUNOFIXATION , serum</td><td class="ar-cell">IMMUNOFIXATION , serum</td><td class="price">3885</td><td class="prep">—</td></tr>
+        <tr><td class="num">119</td><td>Stools Culture and Sensitivity</td><td class="ar-cell">مزرعة وحساسية للبراز</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">120</td><td>HSV II IgG</td><td class="ar-cell">الأجسام المضادة لفيروس هربس (جى) نوع ‏‏2</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">121</td><td>HSV II IgM</td><td class="ar-cell">الأجسام المضادة لفيروس هربس (ام) نوع  ‏‏2</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">122</td><td>Zinc in Blood</td><td class="ar-cell">Zinc</td><td class="price">640</td><td class="prep">—</td></tr>
+        <tr><td class="num">123</td><td>Antihuman Tissue Transglutaminase (TTG) Screen IgA</td><td class="ar-cell">TISSUE TRANSGLUTAMINASE Ab IgA (TTG)</td><td class="price">1045</td><td class="prep">—</td></tr>
+        <tr><td class="num">124</td><td>Protein C</td><td class="ar-cell">Protein C</td><td class="price">1345</td><td class="prep">—</td></tr>
+        <tr><td class="num">125</td><td>Protein S</td><td class="ar-cell">اختبار بروتين اس</td><td class="price">1675</td><td class="prep">—</td></tr>
+        <tr><td class="num">126</td><td>Bacteriological Analysis of Water</td><td class="ar-cell">تحليل بكتيرى لعينة مياه جوفيه</td><td class="price">1320</td><td class="prep">—</td></tr>
+        <tr><td class="num">127</td><td>C-Peptide after 2hr in serum</td><td class="ar-cell">مستوى سى ‏‎–‎‏ ببتيد (فاطر)</td><td class="price">950</td><td class="prep">—</td></tr>
+        <tr><td class="num">128</td><td>Brucella IgM</td><td class="ar-cell">Brucella IgM</td><td class="price">640</td><td class="prep">—</td></tr>
+        <tr><td class="num">129</td><td>PSA-Free</td><td class="ar-cell">بروستاتيك أنتيجين حر</td><td class="price">715</td><td class="prep">—</td></tr>
+        <tr><td class="num">130</td><td>Thyroglobulin  in  serum</td><td class="ar-cell">تحليل البروتين المرتبط بالغدة الدرقية</td><td class="price">1110</td><td class="prep">—</td></tr>
+        <tr><td class="num">131</td><td>HSV I IgG</td><td class="ar-cell">الأجسام المضادة لفيروس هربس (جى) نوع 1</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">132</td><td>HSV I IgM</td><td class="ar-cell">الأجسام المضادة لفيروس هربس (ام) نوع 1</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">133</td><td>Bilharzial Antigen in Serum</td><td class="ar-cell">Bilharzial Antigen in Serum</td><td class="price">395</td><td class="prep">—</td></tr>
+        <tr><td class="num">134</td><td>Bilharzial Antibody</td><td class="ar-cell">Bilharzial Antibody</td><td class="price">525</td><td class="prep">—</td></tr>
+        <tr><td class="num">135</td><td>FMF (MEFV Gene Mutation)  by PCR</td><td class="ar-cell">FMF (MEFV Gene Mutation)  by PCR</td><td class="price">5975</td><td class="prep">—</td></tr>
+        <tr><td class="num">136</td><td>Factor V Leiden Mutation by PCR</td><td class="ar-cell">Factor V Leiden Mutation by PCR</td><td class="price">4015</td><td class="prep">—</td></tr>
+        <tr><td class="num">137</td><td>CA15-3</td><td class="ar-cell">كارسينوانتيجن ( 15- 3 )</td><td class="price">1010</td><td class="prep">—</td></tr>
+        <tr><td class="num">138</td><td>ANCA (Perinuclear)</td><td class="ar-cell">ANCA (Perinuclear)</td><td class="price">2280</td><td class="prep">—</td></tr>
+        <tr><td class="num">139</td><td>Urine Culture and Sensitivity</td><td class="ar-cell">مزرعة وحساسية بالبول</td><td class="price">475</td><td class="prep">—</td></tr>
+        <tr><td class="num">140</td><td>Sputum Culture and Sensitivity</td><td class="ar-cell">مزرعة وحساسية للبصاق</td><td class="price">465</td><td class="prep">—</td></tr>
+        <tr><td class="num">141</td><td>Throat Swab Cutlure and Sensitivity</td><td class="ar-cell">مزرعة وحساسية لمسحة من الزور</td><td class="price">590</td><td class="prep">—</td></tr>
+        <tr><td class="num">142</td><td>Vaginal Discharge Culture and sensitivity</td><td class="ar-cell">مزرعة وحساسية لإفرازات المهبل</td><td class="price">905</td><td class="prep">—</td></tr>
+        <tr><td class="num">143</td><td>Manual Blood culture and Sensitivity</td><td class="ar-cell">مزرعة وحساسية للدم</td><td class="price">650</td><td class="prep">—</td></tr>
+        <tr><td class="num">144</td><td>Pus Culture and Sensitivity (Aerobic and anaerobic)</td><td class="ar-cell">مزرعة وحساسية للصديد</td><td class="price">925</td><td class="prep">—</td></tr>
+        <tr><td class="num">145</td><td>Semen Culture and Sensitivity</td><td class="ar-cell">Semen Culture and Sensitivity</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">146</td><td>Barbiturates Screen</td><td class="ar-cell">Barbiturates Screen</td><td class="price">700</td><td class="prep">—</td></tr>
+        <tr><td class="num">147</td><td>Benzodiazepine Screen</td><td class="ar-cell">Benzodiazepine Screen</td><td class="price">700</td><td class="prep">—</td></tr>
+        <tr><td class="num">148</td><td>Tacrolimus ( FK506 ) Trough </td><td class="ar-cell">Tacrolimus (FK506) Trough</td><td class="price">1955</td><td class="prep">—</td></tr>
+        <tr><td class="num">149</td><td>IgE &quot;Total&quot;</td><td class="ar-cell">IgE &quot;Total&quot;</td><td class="price">565</td><td class="prep">هتصوم من (6 - 10) ساعات و الافضل 8 ساعات .. في الصيام مسموح بشرب المياه والدواء و نمتنع عن الاكل و التدخين 
+(الدواء المسوح به الاقراص فقط)
+(عند اجراء تحاليل دهون كامله مع سكر صائم يشترط الصيام 10ساعات بالظبط يمتنع فيهم عن الاكل و التدخين و يسمح فقط بالماء و الدواء); هتصوم من (6 - 10) ساعات و الافضل 8 ساعات .. في الصيام مسموح بشرب المياه والدواء و نمتنع عن الاكل و التدخين 
+(الدواء المسوح به الاقراص فقط)</td></tr>
+        <tr><td class="num">150</td><td>Beta Subunit HCG (Qualitative)</td><td class="ar-cell">تحليل الحمل فى الدم</td><td class="price">190</td><td class="prep">—</td></tr>
+        <tr><td class="num">151</td><td>Helicobacter Pylori Antigen In Stool (Qualitative)</td><td class="ar-cell">Helicobacter pylori antigen (in stool)</td><td class="price">1575</td><td class="prep">—</td></tr>
+        <tr><td class="num">152</td><td>HCV Ab by Chemiluminescent technology</td><td class="ar-cell">الأجسام المضادة الكلية الخاص بفيروس التهاب كبدى سى</td><td class="price">670</td><td class="prep">—</td></tr>
+        <tr><td class="num">153</td><td>HBe Ab</td><td class="ar-cell">الأجسام المضادة (إى) للفيروس  (بى)</td><td class="price">400</td><td class="prep">—</td></tr>
+        <tr><td class="num">154</td><td>HBs Ab</td><td class="ar-cell">الأجسام المضادة للأنتيجن (اس) الخاص ‏بفيروس التهاب كبدى (بى)</td><td class="price">405</td><td class="prep">—</td></tr>
+        <tr><td class="num">155</td><td>CRP (Qualitative)</td><td class="ar-cell">بروتين - سى - المتفاعل الكيفى</td><td class="price">260</td><td class="prep">—</td></tr>
+        <tr><td class="num">156</td><td>Helicobacter pylori antibody Titre</td><td class="ar-cell">Helicobacter pylori antibody Titre</td><td class="price">1645</td><td class="prep">—</td></tr>
+        <tr><td class="num">157</td><td>RF (Quantitative)</td><td class="ar-cell">معامل الروماتويد الكمى</td><td class="price">630</td><td class="prep">—</td></tr>
+        <tr><td class="num">158</td><td>RF (Qualitative)</td><td class="ar-cell">معامل الروماتويد النوعى</td><td class="price">575</td><td class="prep">—</td></tr>
+        <tr><td class="num">159</td><td>Rh Grouping</td><td class="ar-cell">معامل روسس  أر – أتش</td><td class="price">200</td><td class="prep">—</td></tr>
+        <tr><td class="num">160</td><td>ABO Grouping</td><td class="ar-cell">فصيلة دم</td><td class="price">305</td><td class="prep">—</td></tr>
+        <tr><td class="num">161</td><td>Total Leucocytic Count (WBCs)</td><td class="ar-cell">Total Leucocytic Count</td><td class="price">260</td><td class="prep">—</td></tr>
+        <tr><td class="num">162</td><td>Haemoglobin (Hb) &amp;Haematocrit HCT </td><td class="ar-cell">نسبة الهيموجلوبين بالدم</td><td class="price">220</td><td class="prep">—</td></tr>
+        <tr><td class="num">163</td><td>AFP</td><td class="ar-cell">الفا فيتو بروتين</td><td class="price">660</td><td class="prep">—</td></tr>
+        <tr><td class="num">164</td><td>CEA</td><td class="ar-cell">كارسينو إمبريونك أنتيجين</td><td class="price">565</td><td class="prep">—</td></tr>
+        <tr><td class="num">165</td><td>CA125</td><td class="ar-cell">كارسينوانتيجن ( 125)</td><td class="price">1030</td><td class="prep">—</td></tr>
+        <tr><td class="num">166</td><td>Cyclosporine (Sandimmune) Trough</td><td class="ar-cell">Cyclosporine (Sandimmune) Trough</td><td class="price">1105</td><td class="prep">—</td></tr>
+        <tr><td class="num">167</td><td>Depakine (valproic Acid) Random</td><td class="ar-cell">Depakine (valproic Acid) Random</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">168</td><td>Depakine (valproic Acid) Peak</td><td class="ar-cell">تحليل مستوى ديباكين (مصل)</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">169</td><td>Depakine (Valproic Acid) Trough</td><td class="ar-cell">تحليل مستوى ديباكين (مصل)</td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">170</td><td>Coomb's Test &quot;Indirect&quot;</td><td class="ar-cell">Coomb's Test &quot;Indirect&quot;</td><td class="price">505</td><td class="prep">—</td></tr>
+        <tr><td class="num">171</td><td>Anti Microsomal Antibody (TPO)</td><td class="ar-cell">الأجسام المضادة للميكروزومات</td><td class="price">530</td><td class="prep">—</td></tr>
+        <tr><td class="num">172</td><td>Anti Thyroid Peroxidase Ab</td><td class="ar-cell">Anti Thyroid Peroxidase Ab</td><td class="price">530</td><td class="prep">—</td></tr>
+        <tr><td class="num">173</td><td>Rose-Waaler Test</td><td class="ar-cell">اختبار روز ويلر</td><td class="price">535</td><td class="prep">—</td></tr>
+        <tr><td class="num">174</td><td>Albumin</td><td class="ar-cell">الألبومين فى المصل</td><td class="price">220</td><td class="prep">بدون شروط</td></tr>
+        <tr><td class="num">175</td><td>Albumin in 24 hrs urine</td><td class="ar-cell">الألبومين فى البول</td><td class="price">305</td><td class="prep">—</td></tr>
+        <tr><td class="num">176</td><td>Ammonia</td><td class="ar-cell">أمونيا</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">177</td><td>Bicarbonate (HCO3)</td><td class="ar-cell">بيكربونات</td><td class="price">715</td><td class="prep">—</td></tr>
+        <tr><td class="num">178</td><td>Bilirubin - total</td><td class="ar-cell">Bilirubin - total</td><td class="price">185</td><td class="prep">—</td></tr>
+        <tr><td class="num">179</td><td>Bilirubin - direct</td><td class="ar-cell">Bilirubin - direct</td><td class="price">185</td><td class="prep">—</td></tr>
+        <tr><td class="num">180</td><td>CK-MB</td><td class="ar-cell">CK-MB</td><td class="price">325</td><td class="prep">—</td></tr>
+        <tr><td class="num">181</td><td>Estimated (eGFR)</td><td class="ar-cell">Estimated (eGFR)</td><td class="price">300</td><td class="prep">—</td></tr>
+        <tr><td class="num">182</td><td>Alcohol</td><td class="ar-cell">نسبة الكحوليات فى المصل</td><td class="price">645</td><td class="prep">—</td></tr>
+        <tr><td class="num">183</td><td>Lactate in blood</td><td class="ar-cell">حامض لاكتيت فى الدم</td><td class="price">1330</td><td class="prep">—</td></tr>
+        <tr><td class="num">184</td><td>Microalbuminurea (Random)</td><td class="ar-cell">Microalbuminurea (Random)</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">185</td><td>ACTH pm  in plasma</td><td class="ar-cell">الهرمون المنشط للغدة الكظرية  ( 9 م ) اا</td><td class="price">560</td><td class="prep">—</td></tr>
+        <tr><td class="num">186</td><td>Amyloid A</td><td class="ar-cell">Amyloid A</td><td class="price">2400</td><td class="prep">—</td></tr>
+        <tr><td class="num">187</td><td>Anti Mullerian Hormone-Adult(AMH) in serum</td><td class="ar-cell">Anti Mullerian Hormone(AMH)</td><td class="price">1790</td><td class="prep">—</td></tr>
+        <tr><td class="num">188</td><td>B2 Microglobulin in Serum</td><td class="ar-cell">بيتا- 2- ميكروجلوبيلين فى الدم</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">189</td><td>ionized Ca++</td><td class="ar-cell">ايونات الكالسيوم(مصل)</td><td class="price">475</td><td class="prep">—</td></tr>
+        <tr><td class="num">190</td><td>Uric acid</td><td class="ar-cell">حمض البوليك</td><td class="price">200</td><td class="prep">—</td></tr>
+        <tr><td class="num">191</td><td>Cholesterol - Total</td><td class="ar-cell">كولسترول كلى بالمصل</td><td class="price">220</td><td class="prep">—</td></tr>
+        <tr><td class="num">192</td><td>GH Growth Hormone  in serum  ( Basal )</td><td class="ar-cell">GH ( Basal )</td><td class="price">625</td><td class="prep">—</td></tr>
+        <tr><td class="num">193</td><td>Thrombophilia Gene Screen</td><td class="ar-cell">Thrombophilia Gene Screen</td><td class="price">9985</td><td class="prep">—</td></tr>
+        <tr><td class="num">194</td><td>karyotyping</td><td class="ar-cell">karyotyping</td><td class="price">2575</td><td class="prep">—</td></tr>
+        <tr><td class="num">195</td><td>Immunophenotyping :CD4</td><td class="ar-cell">CD4</td><td class="price">2055</td><td class="prep">—</td></tr>
+        <tr><td class="num">196</td><td>Immunophenotyping :CD56</td><td class="ar-cell">CD56</td><td class="price">2200</td><td class="prep">—</td></tr>
+        <tr><td class="num">197</td><td>Pathological Examination , Large (Histopathology)</td><td class="ar-cell">فحص أنسجة ( عينة كاملة )</td><td class="price">2610</td><td class="prep">—</td></tr>
+        <tr><td class="num">198</td><td>Pathological Examination , Small (Histopathology)</td><td class="ar-cell">فحص أنسجة ( عينة صغيرة )</td><td class="price">1335</td><td class="prep">—</td></tr>
+        <tr><td class="num">199</td><td>Estrogen ( Er receptors )</td><td class="ar-cell">مستقبلات ألا ستروجين</td><td class="price">1505</td><td class="prep">—</td></tr>
+        <tr><td class="num">200</td><td>Progesterone ( Pr receptors )</td><td class="ar-cell">مستقبلات  البروجيسترون</td><td class="price">1755</td><td class="prep">—</td></tr>
+        <tr><td class="num">201</td><td>Her-2/neu IHC</td><td class="ar-cell">Her-2/neu</td><td class="price">2660</td><td class="prep">—</td></tr>
+        <tr><td class="num">202</td><td>ANCA</td><td class="ar-cell">ANCA</td><td class="price">1260</td><td class="prep">—</td></tr>
+        <tr><td class="num">203</td><td>EBV IgG (VCA-IgG)</td><td class="ar-cell">EBV IgG (VCA-IgG)</td><td class="price">565</td><td class="prep">—</td></tr>
+        <tr><td class="num">204</td><td>Bleeding Time (BT)</td><td class="ar-cell">سرعة نزف</td><td class="price">180</td><td class="prep">—</td></tr>
+        <tr><td class="num">205</td><td>Calprotectin in stool , Quantitative</td><td class="ar-cell">Calprotectin in stool , Quantitative</td><td class="price">2325</td><td class="prep">—</td></tr>
+        <tr><td class="num">206</td><td>Brucella Antibody (Malta)</td><td class="ar-cell">اختبار اجسام مضادة لميكروب البروسيلا </td><td class="price">640</td><td class="prep">—</td></tr>
+        <tr><td class="num">207</td><td>Haemoglobin Electrophoresis</td><td class="ar-cell">Haemoglobin Electrophoresis</td><td class="price">820</td><td class="prep">—</td></tr>
+        <tr><td class="num">208</td><td>Anti- Thyroid Antibodies</td><td class="ar-cell">Anti- Thyroid Antibodies</td><td class="price">700</td><td class="prep">—</td></tr>
+        <tr><td class="num">209</td><td>Blood Gases ( Acid Base )</td><td class="ar-cell">Blood Gases ( Acid Base )</td><td class="price">630</td><td class="prep">—</td></tr>
+        <tr><td class="num">210</td><td>PSA (Total &amp; Free)</td><td class="ar-cell">بروستاتيك أنتيجين كلى و جزئى</td><td class="price">1210</td><td class="prep">—</td></tr>
+        <tr><td class="num">211</td><td>PROCALCITONIN</td><td class="ar-cell">PRECALCITONIN</td><td class="price">2840</td><td class="prep">—</td></tr>
+        <tr><td class="num">212</td><td>SPERM DNA FRAGMENTATION</td><td class="ar-cell">SPERM DNA FRAGMENTATION</td><td class="price">5010</td><td class="prep">—</td></tr>
+        <tr><td class="num">213</td><td>Anti -beta 2-Glycoprotein  (IgG)</td><td class="ar-cell">Anti -beta 2-Glycoprotein 1 (IgG)</td><td class="price">1225</td><td class="prep">—</td></tr>
+        <tr><td class="num">214</td><td>HOMA-IR-INDEX in serum</td><td class="ar-cell">HOMA-IR-INDEX</td><td class="price">725</td><td class="prep">—</td></tr>
+        <tr><td class="num">215</td><td>LDL - C</td><td class="ar-cell">كوليسترول منخفض الكثافة</td><td class="price">315</td><td class="prep">—</td></tr>
+        <tr><td class="num">216</td><td>LDH</td><td class="ar-cell">LDH</td><td class="price">285</td><td class="prep">—</td></tr>
+        <tr><td class="num">217</td><td>Haemoglobin A1C</td><td class="ar-cell">اختبار جليكاتد هيمجلوبين</td><td class="price">415</td><td class="prep">—</td></tr>
+        <tr><td class="num">218</td><td>HCV Ab. (ELIZA)</td><td class="ar-cell">HCV Ab</td><td class="price">670</td><td class="prep">—</td></tr>
+        <tr><td class="num">219</td><td>Reducing Sugar in Stool</td><td class="ar-cell">السكر المختزل بالبراز</td><td class="price">240</td><td class="prep">—</td></tr>
+        <tr><td class="num">220</td><td>T3  Total in serum</td><td class="ar-cell">تحليل هرمون  تى3</td><td class="price">370</td><td class="prep">—</td></tr>
+        <tr><td class="num">221</td><td>T4  Total in serum</td><td class="ar-cell">تحليل هرمون  تى4</td><td class="price">370</td><td class="prep">—</td></tr>
+        <tr><td class="num">222</td><td>vit D 25 Hydroxy Cholecalciferol</td><td class="ar-cell">vit D 25 Hydroxy Cholecalciferol</td><td class="price">1715</td><td class="prep">—</td></tr>
+        <tr><td class="num">223</td><td>Albumin/ creatinine ratio, Urine</td><td class="ar-cell">Albumin/ creatinine ratio, Urine</td><td class="price">605</td><td class="prep">—</td></tr>
+        <tr><td class="num">224</td><td>Immunophenotyping :CD16</td><td class="ar-cell">CD16</td><td class="price">1775</td><td class="prep">—</td></tr>
+        <tr><td class="num">225</td><td>Random Blood Glucose</td><td class="ar-cell">Random Blood Glucose</td><td class="price">175</td><td class="prep">—</td></tr>
+        <tr><td class="num">226</td><td>Glucose After 2 Hours</td><td class="ar-cell">Glucose After 2 Hours</td><td class="price">175</td><td class="prep">—</td></tr>
+        <tr><td class="num">227</td><td>Lipid Profile(Chol,Tri,HDL,LDL)</td><td class="ar-cell">Lipid Profile</td><td class="price">860</td><td class="prep">—</td></tr>
+        <tr><td class="num">228</td><td>Protein / creatinine ratio</td><td class="ar-cell">Protein / creatinine ratio</td><td class="price">395</td><td class="prep">—</td></tr>
+        <tr><td class="num">229</td><td>Tuberculin</td><td class="ar-cell">Tuberculin</td><td class="price">430</td><td class="prep">—</td></tr>
+        <tr><td class="num">230</td><td>HCV RNA Quantitative by PCR (TaqMan)</td><td class="ar-cell">HCV RNA Quantitative by TaqMan</td><td class="price">2695</td><td class="prep">—</td></tr>
+        <tr><td class="num">231</td><td>HBV DNA Quantitative by (TaqMan)</td><td class="ar-cell">HBV DNA Quantitative by (TaqMan) Real- time PCR</td><td class="price">2975</td><td class="prep">—</td></tr>
+        <tr><td class="num">232</td><td>Quantiferon T.B. -gold (IGRA)</td><td class="ar-cell">Quantiferon T.B. -gold</td><td class="price">3425</td><td class="prep">بدون شروط لكن يحتاج الى حجز مسبق لانه يحتاج الى انبوب معين</td></tr>
+        <tr><td class="num">233</td><td>Varicella Zoster Virus (VZV)  IgM</td><td class="ar-cell">Varicella Zoster Virus (VZV)  IgM</td><td class="price">920</td><td class="prep">—</td></tr>
+        <tr><td class="num">234</td><td>Anti -beta 2-Glycoprotein  (IgM)</td><td class="ar-cell"></td><td class="price">1170</td><td class="prep">—</td></tr>
+        <tr><td class="num">235</td><td>Glucose 1Hour after 50 gm glucose</td><td class="ar-cell"></td><td class="price">175</td><td class="prep">—</td></tr>
+        <tr><td class="num">236</td><td>Abdomen and Pelvis</td><td class="ar-cell"></td><td class="price">910</td><td class="prep">—</td></tr>
+        <tr><td class="num">237</td><td>Antihuman Tissue Transglutaminase (Anti TTG) Screen IgG</td><td class="ar-cell"></td><td class="price">1055</td><td class="prep">—</td></tr>
+        <tr><td class="num">238</td><td>Tramadol qualitative</td><td class="ar-cell"></td><td class="price">485</td><td class="prep">—</td></tr>
+        <tr><td class="num">239</td><td>Urea breath test</td><td class="ar-cell"></td><td class="price">2065</td><td class="prep">—</td></tr>
+        <tr><td class="num">240</td><td>DNA by sequencer</td><td class="ar-cell"></td><td class="price">10985</td><td class="prep">—</td></tr>
+        <tr><td class="num">241</td><td>M2-PK Quick (Schebo test)</td><td class="ar-cell"></td><td class="price">3060</td><td class="prep">—</td></tr>
+        <tr><td class="num">242</td><td>ANA by IF</td><td class="ar-cell"></td><td class="price">510</td><td class="prep">—</td></tr>
+        <tr><td class="num">243</td><td>Anti SSA (Ro60) (Qualitative)</td><td class="ar-cell"></td><td class="price">1400</td><td class="prep">—</td></tr>
+        <tr><td class="num">244</td><td>Free Testosterone  in  serum</td><td class="ar-cell"></td><td class="price">685</td><td class="prep">—</td></tr>
+        <tr><td class="num">245</td><td>Her-2-neu by SISH</td><td class="ar-cell"></td><td class="price">6765</td><td class="prep">—</td></tr>
+        <tr><td class="num">246</td><td>CASA</td><td class="ar-cell"></td><td class="price">1155</td><td class="prep">—</td></tr>
+        <tr><td class="num">247</td><td>Lupus Anticoagulant Detection</td><td class="ar-cell"></td><td class="price">1075</td><td class="prep">—</td></tr>
+        <tr><td class="num">248</td><td>Anti-thrombin III (AT-III)</td><td class="ar-cell"></td><td class="price">735</td><td class="prep">—</td></tr>
+        <tr><td class="num">249</td><td>Helicobacter pylori line IgG</td><td class="ar-cell"></td><td class="price">1795</td><td class="prep">—</td></tr>
+        <tr><td class="num">250</td><td>Cortisol (Random ) in serum</td><td class="ar-cell"></td><td class="price">515</td><td class="prep">—</td></tr>
+        <tr><td class="num">251</td><td>IgE Specific ( Inhalant allergens )</td><td class="ar-cell"></td><td class="price">1925</td><td class="prep">—</td></tr>
+        <tr><td class="num">252</td><td>IgE Specific ( food allergens )</td><td class="ar-cell"></td><td class="price">5005</td><td class="prep">—</td></tr>
+        <tr><td class="num">253</td><td>Varicella Zoster Virus (VZV)  IgG</td><td class="ar-cell"></td><td class="price">910</td><td class="prep">—</td></tr>
+        <tr><td class="num">254</td><td>Full Toxicology panel</td><td class="ar-cell"></td><td class="price">1720</td><td class="prep">—</td></tr>
+        <tr><td class="num">255</td><td>ANA titre by IF</td><td class="ar-cell"></td><td class="price">740</td><td class="prep">—</td></tr>
+        <tr><td class="num">256</td><td>Philadelphia chromosome by PCR ( No material) ( CML )</td><td class="ar-cell">Philadelphia chromosome by PCR ( No material) ( CML )</td><td class="price">4950</td><td class="prep">—</td></tr>
+        <tr><td class="num">257</td><td>HBs Ag (Eliza)</td><td class="ar-cell"></td><td class="price">480</td><td class="prep">—</td></tr>
+        <tr><td class="num">258</td><td>Food Print – 220 ( Food Intolerance )</td><td class="ar-cell"></td><td class="price">13720</td><td class="prep">—</td></tr>
+        <tr><td class="num">259</td><td>Multi Drug Abuse Qualitative</td><td class="ar-cell"></td><td class="price">1740</td><td class="prep">—</td></tr>
+        <tr><td class="num">260</td><td>Covid - 19 Total Antibody </td><td class="ar-cell"></td><td class="price">1370</td><td class="prep">—</td></tr>
+        <tr><td class="num">261</td><td>COVID-19 RT-PCR</td><td class="ar-cell"></td><td class="price">950</td><td class="prep">—</td></tr>
+        <tr><td class="num">262</td><td>Interleukin-6 (IL6)</td><td class="ar-cell">Interleukin-6 (IL6)</td><td class="price">1240</td><td class="prep">—</td></tr>
+        <tr><td class="num">263</td><td>Covid-19 AG</td><td class="ar-cell"></td><td class="price">485</td><td class="prep">—</td></tr>
+      </tbody>
+    </table>
+    <div class='no-results' id='noResults'>No tests match your search.</div>
+  </div>
+</div>
+
+<div class='section'>
+  <div class='section-header'><h2>Packages &amp; Profiles</h2><span class='count'>8 packages</span></div>
+  <div class='pkg-grid'>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>1. Glucose Blood Curve</div>
+        <div class='pkg-price'>EGP 1165</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Fasting Blood Glucose</span><span class='pkg-test-tag'>Glucose in Urine After 1/2 Hour</span><span class='pkg-test-tag'>Glucose in Urine After 1 Hour</span><span class='pkg-test-tag'>Glucose in Urine After 2 Hours</span><span class='pkg-test-tag'>Glucose in Urine After 3 Hours</span><span class='pkg-test-tag'>Glucose After 2. 1/2Hour</span><span class='pkg-test-tag'>Glucose After 1. 1/2 Hour</span><span class='pkg-test-tag'>Glucose After 1/2Hour</span><span class='pkg-test-tag'>Glucose After 1Hour</span><span class='pkg-test-tag'>Glucose After 2 Hours</span><span class='pkg-test-tag'>Glucose After 3 Hours</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>2. Glucose Tolerance Curve (GTT)</div>
+        <div class='pkg-price'>EGP 970</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Fasting Blood Glucose</span><span class='pkg-test-tag'>Glucose After 2. 1/2Hour</span><span class='pkg-test-tag'>Glucose After 1. 1/2 Hour</span><span class='pkg-test-tag'>Glucose After 1/2Hour</span><span class='pkg-test-tag'>Glucose After 1Hour</span><span class='pkg-test-tag'>Glucose After 2 Hours</span><span class='pkg-test-tag'>Glucose After 3 Hours</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>3. T.B Film ( 3 Samples )</div>
+        <div class='pkg-price'>EGP 505</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>T.B Film (1st Sample)</span><span class='pkg-test-tag'>T.B Film (2nd Sample)</span><span class='pkg-test-tag'>T.B Film (3rd Sample)</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>4. T.B Film ( 5 Sample )</div>
+        <div class='pkg-price'>EGP 835</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>T.B Film (1st Sample)</span><span class='pkg-test-tag'>T.B Film (2nd Sample)</span><span class='pkg-test-tag'>T.B Film (3rd Sample)</span><span class='pkg-test-tag'>T.B Film (4th Sample)</span><span class='pkg-test-tag'>T.B Film (5th Sample)</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>5. Glucose 1/2 Hour Profile</div>
+        <div class='pkg-price'>EGP 220</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Glucose in Urine After 1/2 Hour</span><span class='pkg-test-tag'>Glucose After 1/2Hour</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>6. Glucose 1 Hour profile</div>
+        <div class='pkg-price'>EGP 220</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Glucose in Urine After 1 Hour</span><span class='pkg-test-tag'>Glucose After 1Hour</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>7. Glucose 1. 1/2 Hour Profile</div>
+        <div class='pkg-price'>EGP 220</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Glucose After 1. 1/2 Hour</span></div>
+    </div>
+    <div class='pkg-card'>
+      <div class='pkg-header'>
+        <div class='pkg-name'>8. Glucose 2 Hours profile</div>
+        <div class='pkg-price'>EGP 220</div>
+      </div>
+      <div class='pkg-tests'><span class='pkg-test-tag'>Glucose in Urine After 2 Hours</span><span class='pkg-test-tag'>Glucose After 2 Hours</span></div>
+    </div>
+  </div>
+</div>
+
+<div class='section'>
+  <div class='section-header'><h2>Price Summary</h2><span class='count'>Overview</span></div>
+  <div class='sum-grid'>
+    <div class='sum-card' style='background:linear-gradient(135deg,#2980b9,#3498db)'><div class='sv'>263</div><div class='sl'>Total Tests</div></div>
+    <div class='sum-card' style='background:linear-gradient(135deg,#27ae60,#2ecc71)'><div class='sv'>8</div><div class='sl'>Packages</div></div>
+    <div class='sum-card' style='background:linear-gradient(135deg,#1a5276,#2471a3)'><div class='sv'>EGP 165</div><div class='sl'>Cheapest</div></div>
+    <div class='sum-card' style='background:linear-gradient(135deg,#c0392b,#e74c3c)'><div class='sv'>EGP 13720</div><div class='sl'>Most Expensive</div></div>
+    <div class='sum-card' style='background:linear-gradient(135deg,#8e44ad,#9b59b6)'><div class='sv'>EGP 1019</div><div class='sl'>Average</div></div>
+    <div class='sum-card' style='background:linear-gradient(135deg,#d35400,#e67e22)'><div class='sv'>EGP 565</div><div class='sl'>Median</div></div>
+  </div>
+
+  <div class='top10'>
+    <h3>Top 10 Most Expensive Tests</h3>
+    <div class='top10-list'>
+      <div class='top10-item'>
+        <div class='top10-rank'>1</div>
+        <div class='top10-name'>Food Print – 220 ( Food Intolerance )</div>
+        <div class='top10-price'>EGP 13720</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>2</div>
+        <div class='top10-name'>DNA by sequencer</div>
+        <div class='top10-price'>EGP 10985</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>3</div>
+        <div class='top10-name'>Thrombophilia Gene Screen</div>
+        <div class='top10-price'>EGP 9985</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>4</div>
+        <div class='top10-name'>Her-2-neu by SISH</div>
+        <div class='top10-price'>EGP 6765</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>5</div>
+        <div class='top10-name'>FMF (MEFV Gene Mutation)  by PCR</div>
+        <div class='top10-price'>EGP 5975</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>6</div>
+        <div class='top10-name'>SPERM DNA FRAGMENTATION</div>
+        <div class='top10-price'>EGP 5010</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>7</div>
+        <div class='top10-name'>IgE Specific ( food allergens )</div>
+        <div class='top10-price'>EGP 5005</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>8</div>
+        <div class='top10-name'>Philadelphia chromosome by PCR ( No material) ( CML )</div>
+        <div class='top10-price'>EGP 4950</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>9</div>
+        <div class='top10-name'>Factor V Leiden Mutation by PCR</div>
+        <div class='top10-price'>EGP 4015</div>
+      </div>
+      <div class='top10-item'>
+        <div class='top10-rank'>10</div>
+        <div class='top10-name'>IMMUNOFIXATION , serum</div>
+        <div class='top10-price'>EGP 3885</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class='scroll-top' id='scrollTopBtn' onclick='window.scrollTo({top:0,behavior:"smooth"})'>↑</button>
+
+<script>
+function filterTests() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const rows = document.querySelectorAll('#testsBody tr');
+  let count = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const show = text.includes(q);
+    row.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('resultCount').textContent = count + ' tests';
+  document.getElementById('noResults').style.display = count === 0 ? 'block' : 'none';
+}
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTopBtn').classList.toggle('show', window.scrollY > 400);
+});
+</script>
+</body>
+</html>
